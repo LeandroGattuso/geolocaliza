@@ -5,53 +5,70 @@ const btnSalida = document.getElementById("btnSalida");
 const log = document.getElementById("log");
 
 const registrar = (tipo) => {
-
   const pin = pinInput.value.trim();
   if (!pin) {
     showAlert("Por favor, ingresar su PIN");
     return;
   }
 
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const fechaHora = new Date().toLocaleString();
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      const mapId = `map-${Date.now()}`; // ID unico
+  //LG: verificar PIN antes de continuar
+  fetch("http://localhost:3000/validar-pin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ pin })
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("PIN inválido o expirado");
+      return res.json();
+    })
+    .then(data => {
+      // Si el PIN es válido, continúa con la geolocalización
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const fechaHora = new Date().toLocaleString();
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const mapId = `map-${Date.now()}`;
 
-      const html = `
-        <div class="registro border-top pt-3">
-          <p class="mb-1"><strong>${tipo} registrada</strong></p>
-          <ul class="list-unstyled small mb-2">
-            <li><b>PIN:</b> ${pin}</li>
-            <li><b>Fecha y Hora:</b> ${fechaHora}</li>
-            <li><b>Ubicación:</b> ${lat.toFixed(6)}, ${lon.toFixed(6)}</li>
-          </ul>
-          <div id="${mapId}" class="map"></div>
-        </div>
-      `;
+          const html = `
+            <div class="registro border-top pt-3">
+              <p class="mb-1"><strong>${tipo} registrada</strong></p>
+              <ul class="list-unstyled small mb-2">
+                <li><b>Empleado:</b> ${data.empleado.nombre}</li>
+                <li><b>PIN:</b> ${pin}</li>
+                <li><b>Fecha y Hora:</b> ${fechaHora}</li>
+                <li><b>Ubicación:</b> ${lat.toFixed(6)}, ${lon.toFixed(6)}</li>
+              </ul>
+              <div id="${mapId}" class="map"></div>
+            </div>
+          `;
 
-      const temp = document.createElement("div");
-      temp.innerHTML = html;
-      log.prepend(temp);
+          const temp = document.createElement("div");
+          temp.innerHTML = html;
+          log.prepend(temp);
 
-      requestAnimationFrame(() => {
-        const map = L.map(mapId).setView([lat, lon], 17);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-        L.marker([lat, lon]).addTo(map);
-      });
-    },
-    (error) => {
-      showAlert("Error al obtener la ubicación: " + error.message);
-    },
-    {
-      enableHighAccuracy: true
-    }
-  );
+          requestAnimationFrame(() => {
+            const map = L.map(mapId).setView([lat, lon], 17);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+            L.marker([lat, lon]).addTo(map);
+          });
+        },
+        (error) => {
+          showAlert("Error al obtener la ubicación: " + error.message);
+        },
+        {
+          enableHighAccuracy: true
+        }
+      );
+    })
+    .catch(err => {
+      showAlert(err.message || "Error al validar PIN");
+    });
 };
 
+//LG: metodos que se disparan desde los botones de la fichada inicial
 btnEntrada.addEventListener("click", () => registrar("Entrada"));
 btnSalida.addEventListener("click", () => registrar("Salida"));
 
