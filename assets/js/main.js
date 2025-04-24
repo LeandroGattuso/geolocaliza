@@ -4,6 +4,13 @@ const btnEntrada = document.getElementById("btnEntrada");
 const btnSalida = document.getElementById("btnSalida");
 const log = document.getElementById("log");
 
+const API = {
+  VALIDAR_PIN: "http://localhost:3000/validar-pin",
+  REGISTRAR: "http://localhost:3000/registrar",
+  LOGIN: "http://localhost:3000/login",
+};
+
+
 const registrar = (tipo) => {
 
   const pin = pinInput.value.trim();
@@ -52,16 +59,84 @@ const registrar = (tipo) => {
   );
 };
 
+const login = () => {
+
+  const usuario = document.getElementById("usuario").value.trim();
+  const pass = document.getElementById("pinLogin").value.trim(); 
+
+  if (!usuario || !pass) {    
+    showAlert("Por favor, completar usuario y contraseña");
+    return;
+  }
+
+   // Validar si el usuario no es "demo" y la contraseña no es "123"
+   if (usuario !== "Demo" || pass !== "123") {
+    showAlert("Usuario y/o contraseña incorrecto");
+    return;
+  }
+
+  mostrarPanelRegistro("Demo");
+
+};
+
+//LG: metodos que se disparan desde los botones de la fichada inicial
 btnEntrada.addEventListener("click", () => registrar("Entrada"));
 btnSalida.addEventListener("click", () => registrar("Salida"));
+btnLogin.addEventListener("click", () => login());
+
+function mostrarPanelRegistro(nombreUsuario = "") {
+
+  document.getElementById("loginContainer").classList.add("d-none");
+  document.getElementById("registroContainer").classList.remove("d-none");
+
+  // Mostrar el nombre del usuario arriba
+  const usuarioNombreDiv = document.getElementById("usuarioNombre");
+  usuarioNombreDiv.textContent = nombreUsuario ? `Usuario: ${nombreUsuario}` : "";
+}
+
+
+
+
+function generarFingerprint() {
+  return btoa([
+    navigator.userAgent,
+    screen.width,
+    screen.height,
+    screen.colorDepth
+  ].join('|'));
+}
+
+// Guardar o reutilizar fingerprint
+function obtenerFingerprint() {
+  let fingerprint = localStorage.getItem("fingerprint");
+  if (!fingerprint) {
+    fingerprint = generarFingerprint();
+    localStorage.setItem("fingerprint", fingerprint);
+  }
+  return fingerprint;
+}
+
 
 //LG: logica alert
 const alertContainer = document.getElementById("alertContainer");
 
 function showAlert(message, type = "danger", timeout = 2000) {
 
-  //LG: Eliminar cualquier alerta existente
-  alertContainer.innerHTML = "";
+  // Determinar qué contenedor está visible
+  let container;
+  if (!document.getElementById("loginContainer").classList.contains("d-none")) {
+    container = document.getElementById("loginAlertContainer");
+  } else {
+    container = document.getElementById("registroAlertContainer");
+  }
+
+  if (!container) {
+    console.error("No se encontró contenedor de alertas visible");
+    return;
+  }
+
+  console.log('Mostrando alerta con el mensaje:', message);
+  container.innerHTML = "";
 
   const alertId = `alert-${Date.now()}`;
   const alert = document.createElement("div");
@@ -72,14 +147,34 @@ function showAlert(message, type = "danger", timeout = 2000) {
     ${message}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   `;
-  alertContainer.appendChild(alert);
+  container.appendChild(alert);
 
-  // Cierre automático
   setTimeout(() => {
     const alertEl = bootstrap.Alert.getOrCreateInstance(document.getElementById(alertId));
     alertEl.close();
   }, timeout);
 }
+
+document.getElementById('olvidePassword')?.addEventListener('click', function(e) {
+  e.preventDefault();
+  // Aquí puedes implementar la lógica para recuperar contraseña
+  showAlert("Por favor contacte al administrador para recuperar su contraseña", "info", 3000, "loginAlertContainer");
+});
+
+//************************* DOM *************************
+
+document.addEventListener("DOMContentLoaded", () => {
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  if (usuario) {
+    //mostrarPanelRegistro();
+    mostrarPanelRegistro(usuario.nombre);  // Mostrar nombre si el usuario ya está en localStorage
+  }
+}); 
+
+
+
+
+
 
 
 
