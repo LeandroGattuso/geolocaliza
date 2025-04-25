@@ -125,11 +125,24 @@ const alertContainer = document.getElementById("alertContainer");
 
 function showAlert(message, type = "danger", timeout = 2000) {
 
-  // Determinar qué contenedor está visible
-  let container;
-  if (!document.getElementById("loginContainer").classList.contains("d-none")) {
+  //LG: determinar qué contenedor está visible
+  let container = null;
+
+  // 1. Si está visible el modal de registro de usuario, usamos su contenedor
+  const modal = document.getElementById("registroUsuarioModal");
+  const modalVisible = modal && modal.classList.contains("show"); // Bootstrap le pone "show" cuando está abierto
+
+  if (modalVisible) {
+    container = document.getElementById("registroUsuarioAlert");
+  }
+
+  // 2. Si está el login visible, usamos su contenedor
+  else if (!document.getElementById("loginContainer").classList.contains("d-none")) {
     container = document.getElementById("loginAlertContainer");
-  } else {
+  }
+
+  // 3. Si nada anterior aplica, usamos el contenedor general de registro
+  else {
     container = document.getElementById("registroAlertContainer");
   }
 
@@ -167,12 +180,57 @@ document.getElementById('olvidePassword')?.addEventListener('click', function(e)
 //************************* DOM *************************
 
 document.addEventListener("DOMContentLoaded", () => {
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  if (usuario) {
-    //mostrarPanelRegistro();
-    mostrarPanelRegistro(usuario.nombre);  // Mostrar nombre si el usuario ya está en localStorage
-  }
-}); 
+
+  const formRegistroUsuario = document.getElementById("formRegistroUsuario");
+  const alertContainer = document.getElementById("registroUsuarioAlert");
+
+  formRegistroUsuario.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const usuario = document.getElementById("nuevoUsuario").value.trim();
+    const pass = document.getElementById("nuevaPass").value.trim();
+    const confirmarPass = document.getElementById("confirmarPass").value.trim();
+    const pin = document.getElementById("nuevoPin").value.trim();
+
+    if (!usuario || !pass || !confirmarPass || !pin) {
+      showAlert("Por favor, completá todos los campos.", "danger");
+      return;
+    }
+
+    if (pass !== confirmarPass) {
+      showAlert("Las contraseñas no coinciden.", "danger");
+      return;
+    }
+
+    try {
+
+      if (1==1) {
+        showAlert("Usuario registrado correctamente.", "success");
+
+        setTimeout(() => {
+          const modalElement = document.getElementById("registroUsuarioModal");
+          let modalInstance = bootstrap.Modal.getInstance(modalElement);
+          if (!modalInstance) {
+            modalInstance = new bootstrap.Modal(modalElement);
+          }
+          modalInstance.hide();
+
+          const inputUsuarioLogin = document.getElementById("usuario");
+          if (inputUsuarioLogin) inputUsuarioLogin.value = usuario;
+
+          formRegistroUsuario.reset();
+        }, 2000);
+      } else {
+        showAlert(data?.error || "Error al registrar usuario.", "danger");
+      }
+    } catch (error) {
+      showAlert("Error de conexión con el servidor.", "danger");
+    }
+  });
+
+
+
+});
 
 
 
