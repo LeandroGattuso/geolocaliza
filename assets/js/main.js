@@ -91,7 +91,10 @@ function mostrarPanelRegistro(nombreUsuario = "") {
 
   // Mostrar el nombre del usuario arriba
   const usuarioNombreDiv = document.getElementById("usuarioNombre");
-  usuarioNombreDiv.textContent = nombreUsuario ? `Usuario: ${nombreUsuario}` : "";
+  if (usuarioNombreDiv) {
+    usuarioNombreDiv.textContent = nombreUsuario ? `${nombreUsuario}` : "";
+    //usuarioNombreDiv.textContent = nombreUsuario ? `Usuario: ${nombreUsuario}` : "";
+  }
 }
 
 
