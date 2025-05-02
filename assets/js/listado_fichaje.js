@@ -89,10 +89,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //logica tamaño de pantalla 
   logicaTamanioPantallaMenu();
-
+  mostrarFichaje();
 
 });
 
+async function mostrarFichaje() {
+
+    cargarTablaFichajes();
+  
+}
+
+
+function cargarTablaFichajes() {
+  const tbody = document.querySelector('#tablaFichajes2 tbody');
+  tbody.innerHTML = ''; // Limpiar la tabla
+
+  // Datos hardcodeados
+  const fichajes = [
+    {
+      fecha: '2025-04-30',
+      hora: '08:45',
+      tipo: 'Entrada',
+      usuario: 'Demo'
+    },
+    {
+      fecha: '2025-04-30',
+      hora: '17:50',
+      tipo: 'Salida',
+      usuario: 'Demo'
+    },
+    {
+      fecha: '2025-05-01',
+      hora: '08:55',
+      tipo: 'Entrada',
+      usuario: 'Demo'
+    },
+    {
+      fecha: '2025-05-01',
+      hora: '18:01',
+      tipo: 'Salida',
+      usuario: 'Demo'
+    }
+  ];
+
+  fichajes.forEach(fichaje => {
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td>${fichaje.fecha}</td>
+      <td>${fichaje.hora}</td>
+      <td>${fichaje.tipo}</td>
+      <td>${fichaje.usuario}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
 
 
 function Fichaje() {

@@ -93,6 +93,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+async function mostrarFichaje() {
+  //const pin = document.getElementById('pin').value;
+
+
+  document.getElementById('registroContainer').classList.add('d-none');
+  document.getElementById('tablaFichajesContainer').classList.remove('d-none');
+
+
+    cargarTablaFichajes(fichajes);
+  
+}
+
+
+function cargarTablaFichajes(fichajes) {
+  const tbody = document.querySelector('#tablaFichajes tbody');
+  tbody.innerHTML = ''; // Limpiar la tabla
+
+  fichajes.forEach(fichaje => {
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td>${fichaje.fecha}</td>
+      <td>${fichaje.hora}</td>
+      <td>${fichaje.tipo}</td>
+      <td>${fichaje.usuario}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+
+function Fichaje() {
+  window.location.href = 'menu.html';
+}
+
 function logout() {
 
   // Limpiar almacenamiento
