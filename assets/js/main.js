@@ -75,7 +75,8 @@ const login = () => {
     return;
   }
 
-  mostrarPanelRegistro("Demo");
+  //mostrarPanelRegistro("Demo");
+  window.location.href = "menu.html"; // <--- Redirige
 
 };
 

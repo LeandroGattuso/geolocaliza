@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo gestion</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <!-- Leaflet (para mapas) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <link rel="stylesheet" href="assets/css/style_menu.css">
+  <!-- Fontawesome CDN Link -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+</head>
+
+<body>
+  <nav class="sidebar">
+    <a href="menu.html" class="logo">DEMO GESTIÓN</a>
+
+    <div class="menu-content">
+      <ul class="menu-items">
+        <div class="menu-title with-divider">Menú</div>
+
+        <!-- 
+                <li class="item">
+                    <a href="#">Configuración</a>
+                </li> -->
+
+        <li class="item">
+          <div class="submenu-item">
+            <span>Administración</span>
+            <i class="bi bi-chevron-right"></i>
+          </div>
+
+          <ul class="menu-items submenu">
+            <div class="menu-title">
+              <i class="bi bi-chevron-left"></i>
+              Administración
+            </div>
+            <li class="item">
+              <a href="usuarios.html"><i class="bi bi-person-gear fs-5 me-2"></i> Usuarios</a>
+            </li>
+            <li class="item">
+              <a href="empleados.html"><i class="bi bi-people-fill fs-5 me-2"></i> Empleados</a>
+            </li>
+            <li class="item">
+              <a href="#" onclick="Fichaje()"><i class="bi bi-clock-history fs-5 me-2"></i> Fichaje</a>
+            </li>
+            <li class="item">
+              <a href="solicitudes.html"><i class="bi bi-envelope-check fs-5 me-2"></i> Solicitudes</a>
+            </li>
+            <li class="item">
+              <a href="vacaciones.html"><i class="bi bi-calendar-heart fs-5 me-2"></i> Vacaciones</a>
+            </li>      
+            <li class="item">
+              <a href="rrhh.html"><i class="bi bi-person-vcard fs-5 me-2"></i> RR.HH.</a>
+            </li>            
+          </ul>
+        </li>
+        <li class="item">
+          <div class="submenu-item">
+            <span>Informes</span>
+            <i class="bi bi-chevron-right"></i>
+          </div>
+
+          <ul class="menu-items submenu">
+            <div class="menu-title">
+              <i class="bi bi-chevron-left"></i>
+              Informes
+            </div>
+            <li class="item">
+              <a href="#" onclick="mostrarFichaje()"><i class="bi bi-list-ul fs-5 me-2"></i> Listado de fichajes</a>
+            </li>
+
+          </ul>
+        </li>
+
+        <!-- <li class="item">
+                    <a href="#">Your second link</a>
+                </li> 
+
+                <li class="item">
+                    <a href="#" onclick="logout()">Cerrar sesión</a>
+                </li> -->
+      </ul>
+    </div>
+  </nav>
+
+  <nav class="navbar">
+    <i class="bi bi-list" id="sidebar-close"></i>
+    <div class="user-menu-container">
+      <div class="navbar-user" id="user-menu-trigger">
+        <i class="bi bi-person-circle"></i>
+        <span class="username" id="navbar-usuario-nombre">Admin</span> 
+      </div>
+      <div class="user-dropdown" id="user-dropdown">
+        <a href="#"><i class="bi bi-person"></i> Perfil</a>
+        <a href="#" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main">
+
+
+    <!--<div class="d-flex">-->
+
+    <!-- Contenedor central -->
+    <div id="content" class="container-fluid">
+
+      <!-- Panel de Fichada  ***********************************************************  -->
+      <div id="registroContainer" class="container py-5 d-flex justify-content-center align-items-center">
+        <div class="card shadow-lg border-0 w-100" style="max-width: 600px; border-radius: 1rem; min-height: 80vh;">
+          <div class="card-body p-4 d-flex flex-column">
+
+            <h2 class="card-title text-center mb-4">Fichaje de Empleados</h2>
+
+            <div class="mb-4">
+              <input type="password" id="pin" class="form-control form-control-lg text-center"
+                placeholder="Ingresar PIN...">
+            </div>
+
+            <div class="d-grid gap-3 mb-4">
+              <button id="btnEntrada" class="btn btn-primary btn-lg">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Marcar Entrada
+              </button>
+              <button id="btnSalida" class="btn btn-primary btn-lg">
+                <i class="bi bi-box-arrow-left me-2"></i>Marcar Salida
+              </button>
+            </div>
+
+            <div id="registroAlertContainer" class="mt-3"></div>
+            <div id="log" class="overflow-auto mt-3 flex-grow-1"></div>
+
+          </div>
+        </div>
+      </div> <!-- FIN Panel de Fichada  ***********************************************************  -->
+
+      <!-- Tabla de Fichajes *********************************************************** -->
+      <div id="tablaFichajesContainer" class="container py-5 d-none">
+        <div class="card shadow border-0">
+          <div class="card-body">
+            <h2 class="card-title mb-4 text-center">Listado de Fichajes</h2>
+            <div class="mb-3">
+              <input type="text" id="filtroPin" class="form-control" placeholder="Filtrar por PIN...">
+            </div>
+            <div class="table-responsive">
+              <table id="tablaFichajes" class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Tipo</th>
+                    <th>Usuario</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Se llena dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div> <!-- FIN Tabla de Fichajes *********************************************************** -->
+
+    </div>
+
+    <!--</div>-->
+
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/apiConfig.js"></script>
+  <script src="assets/js/alertas.js"></script>
+  <script src="assets/js/menu.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo gestion</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <!-- Leaflet (para mapas) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <link rel="stylesheet" href="assets/css/style_menu.css">
+  <!-- Fontawesome CDN Link -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+</head>
+
+<body>
+  <nav class="sidebar">
+    <a href="menu.html" class="logo">DEMO GESTIÓN</a>
+
+    <div class="menu-content">
+      <ul class="menu-items">
+        <div class="menu-title with-divider">Menú</div>
+
+        <!-- 
+                <li class="item">
+                    <a href="#">Configuración</a>
+                </li> -->
+
+        <li class="item">
+          <div class="submenu-item">
+            <span>Administración</span>
+            <i class="bi bi-chevron-right"></i>
+          </div>
+
+          <ul class="menu-items submenu">
+            <div class="menu-title">
+              <i class="bi bi-chevron-left"></i>
+              Administración
+            </div>
+            <li class="item">
+              <a href="usuarios.html"><i class="bi bi-person-gear fs-5 me-2"></i> Usuarios</a>
+            </li>
+            <li class="item">
+              <a href="empleados.html"><i class="bi bi-people-fill fs-5 me-2"></i> Empleados</a>
+            </li>
+            <li class="item">
+              <a href="#" onclick="Fichaje()"><i class="bi bi-clock-history fs-5 me-2"></i> Fichaje</a>
+            </li>
+            <li class="item">
+              <a href="solicitudes.html"><i class="bi bi-envelope-check fs-5 me-2"></i> Solicitudes</a>
+            </li>
+            <li class="item">
+              <a href="vacaciones.html"><i class="bi bi-calendar-heart fs-5 me-2"></i> Vacaciones</a>
+            </li>
+            <li class="item">
+              <a href="rrhh.html"><i class="bi bi-person-vcard fs-5 me-2"></i> RR.HH.</a>
+            </li>   
+          </ul>
+        </li>
+        <li class="item">
+          <div class="submenu-item">
+            <span>Informes</span>
+            <i class="bi bi-chevron-right"></i>
+          </div>
+
+          <ul class="menu-items submenu">
+            <div class="menu-title">
+              <i class="bi bi-chevron-left"></i>
+              Informes
+            </div>
+            <li class="item">
+              <a href="#" onclick="mostrarFichaje()"><i class="bi bi-list-ul fs-5 me-2"></i> Listado de fichajes</a>
+            </li>
+
+          </ul>
+        </li>
+
+        <!-- <li class="item">
+                    <a href="#">Your second link</a>
+                </li> 
+
+                <li class="item">
+                    <a href="#" onclick="logout()">Cerrar sesión</a>
+                </li> -->
+      </ul>
+    </div>
+  </nav>
+
+  <nav class="navbar">
+    <i class="bi bi-list" id="sidebar-close"></i>
+    <div class="user-menu-container">
+      <div class="navbar-user" id="user-menu-trigger">
+        <i class="bi bi-person-circle"></i>
+        <span class="username" id="navbar-usuario-nombre">Admin</span>
+      </div>
+      <div class="user-dropdown" id="user-dropdown">
+        <a href="#"><i class="bi bi-person"></i> Perfil</a>
+        <a href="#" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main">
+    
+    <div id="content" class="container-fluid">
+      <h2 class="mb-4 text-center">Gestión de RR.HH.</h2>
+  
+      <form id="rrhhForm" class="card p-4 shadow-sm">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="nombre_completo" class="form-label">Nombre completo</label>
+            <input type="text" class="form-control" id="nombre_completo" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="dni" class="form-label">DNI / Número de documento</label>
+            <input type="number" class="form-control" id="dni" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="fecha_nac" class="form-label">Fecha de nacimiento</label>
+            <input type="date" class="form-control" id="fecha_nac" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="direccion" class="form-label">Dirección</label>
+            <input type="text" class="form-control" id="direccion" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="tel" class="form-control" id="telefono" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="correo" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="correo" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="estado_civil" class="form-label">Estado civil</label>
+            <select class="form-select" id="estado_civil" required>
+              <option value="">Seleccionar...</option>
+              <option value="soltero">Soltero/a</option>
+              <option value="casado">Casado/a</option>
+              <option value="divorciado">Divorciado/a</option>
+              <option value="viudo">Viudo/a</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="nacionalidad" class="form-label">Nacionalidad</label>
+            <input type="text" class="form-control" id="nacionalidad" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="fecha_ingreso" class="form-label">Fecha de ingreso</label>
+            <input type="date" class="form-control" id="fecha_ingreso" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="puesto" class="form-label">Puesto / Cargo</label>
+            <input type="text" class="form-control" id="puesto" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="departamento" class="form-label">Departamento / Área</label>
+            <input type="text" class="form-control" id="departamento" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="tipo_contrato" class="form-label">Tipo de contrato</label>
+            <select class="form-select" id="tipo_contrato" required>
+              <option value="">Seleccionar...</option>
+              <option value="permanente">Permanente</option>
+              <option value="temporal">Temporal</option>
+              <option value="pasantia">Pasantía</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="horario" class="form-label">Horario laboral</label>
+            <input type="text" class="form-control" id="horario" placeholder="Ej.: 9 a 18 hs, lunes a viernes">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="legajo" class="form-label">Número de legajo</label>
+            <input type="text" class="form-control" id="legajo" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="cuil" class="form-label">Número de CUIL / CUIT</label>
+            <input type="text" class="form-control" id="cuil" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="obra_social" class="form-label">Obra social</label>
+            <input type="text" class="form-control" id="obra_social">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="banco" class="form-label">Banco y cuenta sueldo</label>
+            <input type="text" class="form-control" id="banco">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="contacto_emergencia" class="form-label">Contacto de emergencia</label>
+            <input type="text" class="form-control" id="contacto_emergencia" placeholder="Nombre y teléfono">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="formacion" class="form-label">Formación académica</label>
+            <input type="text" class="form-control" id="formacion">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="cursos" class="form-label">Cursos / Capacitaciones</label>
+            <textarea class="form-control" id="cursos" rows="3"></textarea>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="fecha_baja" class="form-label">Fecha de baja (si corresponde)</label>
+            <input type="date" class="form-control" id="fecha_baja">
+          </div>
+        </div>
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+      
+
+    </div>
+  </main>
+  
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/apiConfig.js"></script>
+  <script src="assets/js/alertas.js"></script>
+  <script src="assets/js/rrhh.js"></script>
+
+</body>
+
+</html>
